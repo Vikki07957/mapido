@@ -1,0 +1,14 @@
+# MAPIDO Manual Acceptance Tests
+
+Run `database/schema.sql`, configure MySQL, and optionally run `php seed.php`. Use fresh browser sessions for separate roles. Seeded sample rides must remain unbookable.
+
+1. **Registration:** Register a driver and passenger with distinct emails and passwords of at least 10 characters. Confirm both can log in. Try a duplicate email, invalid email and short password; each must fail without creating an account. Confirm public registration cannot choose the admin role.
+2. **Login and access control:** Test a wrong password, then a valid login/logout. As a passenger, open `index.php?page=admin` and submit a forged `offer` action; neither may grant driver/admin privileges. Suspend a test account as admin and confirm its next protected request clears the session.
+3. **Ride search:** Publish a future non-sample ride as a driver. Search by exact and partial origin/destination and date; verify route, date, vehicle, contribution estimate and remaining seats. Confirm seeded Sample rides are labeled and cannot be requested. Confirm search does not display phone numbers.
+4. **Seat booking:** As a passenger, request one or more seats; verify a Pending request and driver notification. As driver, confirm within capacity. Attempt another confirmation that would exceed capacity; it must remain unconfirmed. Attempt a duplicate active request from the same passenger; it must be rejected.
+5. **Cancellation:** Cancel a Pending passenger request, then a Confirmed request. Confirm status changes to Cancelled and seats become available again. Cancel a driver ride and confirm active booking statuses are cancelled and passengers notified. A second cancellation must fail without changing other records.
+6. **Ride edits and completion:** Edit route details, date, cost and pickup points. Attempt to lower total seats below confirmed passenger seats; save must fail. Mark a ride completed only on/after its travel date and verify confirmed bookings become Completed.
+7. **Reviews:** Try to review an upcoming/non-participant ride; it must fail. Submit one review per completed ride, then try the duplicate; the unique constraint must prevent it. Report the review and verify it appears in the admin review queue.
+8. **Admin permissions:** As a non-admin, attempt user suspension and complaint resolution; both must be denied. As admin, suspend/restore a non-admin account and resolve an open complaint. Admin accounts must not be suspendable through this form.
+9. **Support and safety:** Submit a support, complaint and emergency report. Verify the records appear in the admin queue and the confirmation clearly states that MAPIDO does not contact emergency services.
+10. **Chat:** Confirm a booking, send messages as both parties, and verify history, timestamps and unread count. Open the other party's conversation and verify read count clears. Confirm a third party or pending passenger cannot read or send messages.
